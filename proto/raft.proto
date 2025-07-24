@@ -1,0 +1,46 @@
+syntax = "proto3";
+//CHANGE INT32 to uint64
+package raftpb; 
+
+service RaftService {
+  // TODO: implement AppendEntries and RequestVote
+  rpc RequestVote(RequestVoteRequest) returns (RequestVoteReply) {}
+  rpc AppendEntries(AppendEntriesRequest) returns (AppendEntriesReply) {}
+}
+
+message RequestVoteRequest{
+  int64 term = 1; 
+  int64 candidate_id = 2;
+  int64 last_log_index= 3;
+  int64 last_log_term= 4;
+}
+message RequestVoteReply{
+  int64 term= 1;
+  bool vote_granted= 2;
+}
+
+message Entry{
+  int64 term = 1;
+  string command = 2;
+}
+
+message AppendEntriesRequest{
+  int64 term= 1; 
+  int64 leader_id=2;
+  int64 prev_log_index=3;
+  int64 prev_log_term=4;
+  repeated Entry entries=5;
+  int64 leader_commit=6;
+}
+message AppendEntriesReply{
+  int64 term=1;
+  bool success=2;
+  ConflictInfo conflict_info = 3;
+
+  message ConflictInfo {
+    int64 conflict_term = 1;
+    int64 conflict_index = 2;
+  }
+}
+
+
